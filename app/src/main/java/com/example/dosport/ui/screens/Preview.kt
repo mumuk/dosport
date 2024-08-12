@@ -1,4 +1,4 @@
-//package com.example.dosport.ui.components
+package com.example.dosport.ui.screens//package com.example.dosport.ui.components
 //
 //import android.content.res.Configuration
 //import androidx.compose.material3.Surface

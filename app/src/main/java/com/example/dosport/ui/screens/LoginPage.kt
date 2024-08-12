@@ -1,4 +1,4 @@
-package com.example.dosport.ui.components
+package com.example.dosport.ui.screens
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -29,7 +29,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.dosport.ui.theme.AppTheme
 
 

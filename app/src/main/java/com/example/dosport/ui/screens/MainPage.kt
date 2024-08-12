@@ -1,4 +1,4 @@
-package com.example.dosport.ui.components
+package com.example.dosport.ui.screens
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background

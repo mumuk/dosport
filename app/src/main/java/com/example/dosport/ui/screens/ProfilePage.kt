@@ -1,3 +1,5 @@
+package com.example.dosport.ui.screens
+
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
 import com.example.dosport.R
-import com.example.dosport.ui.components.LoginPage
 import com.example.dosport.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

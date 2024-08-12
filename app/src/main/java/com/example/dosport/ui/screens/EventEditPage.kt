@@ -1,4 +1,4 @@
-package com.example.dosport.ui.components
+package com.example.dosport.ui.screens
 
 import android.content.res.Configuration
 import androidx.compose.material3.MaterialTheme
@@ -12,12 +12,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dosport.ui.theme.AppTheme
 
 @Composable
-fun ExerciseEditPage(navController: NavController, id: String? = null) {
+fun EventEditPage(navController: NavController, id: String? = null) {
     Surface(color = MaterialTheme.colorScheme.background) {
         if (id == null) {
-            Text(text = "Exercise Edit Page - New")
+            Text(text = "Event Edit Page - New")
         } else {
-            Text(text = "Exercise Edit Page - Editing $id")
+            Text(text = "Event Edit Page - Editing $id")
         }
     }
 }
@@ -33,10 +33,10 @@ fun ExerciseEditPage(navController: NavController, id: String? = null) {
     name = "Light"
 )
 @Composable
-fun ExerciseEditPagePreview() {
+fun EventEditPagePreview() {
     AppTheme {
         Surface(tonalElevation = 5.dp) {
-            ExerciseEditPage(navController = rememberNavController(), id = "123")
+            EventEditPage(navController = rememberNavController(), id = "123")
         }
     }
 }

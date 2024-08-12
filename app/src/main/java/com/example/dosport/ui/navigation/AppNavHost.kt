@@ -1,17 +1,20 @@
-package com.example.dosport.ui.components.navigation
+package com.example.dosport.ui.navigation
 
 
-import ProfilePage
+import com.example.dosport.ui.screens.ProfilePage
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.dosport.R
-import com.example.dosport.ui.components.*
-
-
+import com.example.dosport.ui.screens.EventEditPage
+import com.example.dosport.ui.screens.ExerciseEditPage
+import com.example.dosport.ui.screens.LoginPage
+import com.example.dosport.ui.screens.MainPage
+import com.example.dosport.ui.screens.Program
+import com.example.dosport.ui.screens.ProgramEditPage
+import com.example.dosport.ui.screens.ScreenEditPage
 
 
 @Composable
