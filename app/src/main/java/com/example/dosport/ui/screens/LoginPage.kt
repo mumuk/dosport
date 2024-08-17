@@ -1,5 +1,6 @@
 package com.example.dosport.ui.screens
 
+
 import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.dosport.ui.components.forms.ForgotPasswordForm
+import com.example.dosport.ui.components.forms.LoginForm
+import com.example.dosport.ui.components.forms.RegistrationForm
+
 import com.example.dosport.ui.theme.AppTheme
 
 
@@ -37,194 +42,35 @@ enum class FormType {
 }
 
 @Composable
-fun LoginPage(navController: NavController) {
+fun LoginPage(
+    navController: NavController,
+    onLoginSuccess: () -> Unit,
+    onRegister: () -> Unit
+) {
     var currentForm by remember { mutableStateOf(FormType.LOGIN) }
 
     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.Center) {
         when (currentForm) {
-            FormType.REGISTER -> RegistrationForm(onSwitchForm = {
-                currentForm = FormType.valueOf(it)
-            })
-
-            FormType.LOGIN -> LoginForm(onSwitchForm = { currentForm = FormType.valueOf(it) })
-            FormType.FORGOT_PASSWORD -> ForgotPasswordForm(onSwitchForm = {
-                currentForm = FormType.valueOf(it)
-            })
-        }
-    }
-}
-
-@Composable
-fun RegistrationForm(onSwitchForm: (String) -> Unit) {
-    var email by remember { mutableStateOf(TextFieldValue("")) }
-    var password by remember { mutableStateOf(TextFieldValue("")) }
-
-    Column(modifier = Modifier.fillMaxSize().padding(32.dp), verticalArrangement = Arrangement.Center) {
-        Text(text = "Registration Form", style = MaterialTheme.typography.titleLarge, modifier = Modifier.align(
-            Alignment.CenterHorizontally))
-        Spacer(modifier = Modifier.height(16.dp))
-        BasicTextField(
-            value = email,
-            onValueChange = { email = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .border(1.dp, MaterialTheme.colorScheme.primary),
-            decorationBox = { innerTextField ->
-                Box(modifier = Modifier.padding(16.dp)) {
-                    if (email.text.isEmpty()) {
-                        Text(
-                            text = "Email",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    innerTextField()
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        BasicTextField(
-            value = password,
-            onValueChange = { password = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .border(1.dp, MaterialTheme.colorScheme.primary),
-            decorationBox = { innerTextField ->
-                Box(modifier = Modifier.padding(16.dp)) {
-                    if (password.text.isEmpty()) {
-                        Text(
-                            text = "Password",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    innerTextField()
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { /* handle registration */ }, modifier = Modifier.align(
-            Alignment.CenterHorizontally).padding(end = 16.dp).width(200.dp)) {
-            Text("Register")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { onSwitchForm(FormType.LOGIN.toString()) },modifier = Modifier.align(
-            Alignment.CenterHorizontally).padding(end = 16.dp)) {
-            Text("Already have an account? Log in")
+            FormType.REGISTER -> RegistrationForm(
+                onSwitchForm = { currentForm = FormType.valueOf(it) },
+                onRegister = onRegister  // Передаем onRegister
+            )
+            FormType.LOGIN -> LoginForm(
+                onSwitchForm = { currentForm = FormType.valueOf(it) },
+                onLoginSuccess = onLoginSuccess
+            )
+            FormType.FORGOT_PASSWORD -> ForgotPasswordForm(
+                onSwitchForm = { currentForm = FormType.valueOf(it) }
+            )
         }
     }
 }
 
 
-@Composable
-fun LoginForm(onSwitchForm: (String) -> Unit) {
-    var email by remember { mutableStateOf(TextFieldValue("")) }
-    var password by remember { mutableStateOf(TextFieldValue("")) }
-    Column(modifier = Modifier.fillMaxSize().padding(32.dp), verticalArrangement = Arrangement.Center) {
-        Text(text = "Login Form", style = MaterialTheme.typography.titleLarge,modifier = Modifier.align(
-            Alignment.CenterHorizontally) )
-        Spacer(modifier = Modifier.height(16.dp))
-        BasicTextField(
-            value = TextFieldValue(""),
-            onValueChange = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .border(1.dp, MaterialTheme.colorScheme.primary),
-            decorationBox = { innerTextField ->
-                Box(modifier = Modifier.padding(16.dp)) {
-                    if (email.text.isEmpty()) {
-                        Text(
-                            text = "Email",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    innerTextField()
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        BasicTextField(
-            value = password,
-            onValueChange = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .border(1.dp, MaterialTheme.colorScheme.primary),
-            decorationBox = { innerTextField ->
-                Box(modifier = Modifier.padding(16.dp)) {
-                    if (password.text.isEmpty()) {
-                        Text(
-                            text = "Password",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    innerTextField()
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { /* handle login */ }, modifier = Modifier.align(
-            Alignment.CenterHorizontally).padding(end = 16.dp).width(200.dp)) {
-            Text("Login")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { onSwitchForm("forgotPassword") },modifier = Modifier.align(
-            Alignment.CenterHorizontally).padding(end = 16.dp)) {
-            Text("Forgot password?")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { onSwitchForm("registration") }, modifier = Modifier.align(
-            Alignment.CenterHorizontally).padding(end = 16.dp)) {
-            Text("Don't have an account? Register")
-        }
-    }
-}
 
-@Composable
-fun ForgotPasswordForm(onSwitchForm: (String) -> Unit) {
-    var email by remember { mutableStateOf(TextFieldValue("")) }
 
-    Column(modifier = Modifier.fillMaxSize().padding(32.dp), verticalArrangement = Arrangement.Center) {
-        Text(text = "Password Reset Form", style = MaterialTheme.typography.titleLarge, modifier = Modifier.align(
-            Alignment.CenterHorizontally))
-        Spacer(modifier = Modifier.height(16.dp))
-        BasicTextField(
-            value = email,
-            onValueChange = { email = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .border(1.dp, MaterialTheme.colorScheme.primary),
-            decorationBox = { innerTextField ->
-                Box(modifier = Modifier.padding(16.dp)) {
-                    if (email.text.isEmpty()) {
-                        Text(
-                            text = "Email",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    innerTextField()
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { /* handle password reset */ }, modifier = Modifier.align(
-            Alignment.CenterHorizontally).width(200.dp)) {
-            Text("Reset Password")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { onSwitchForm(FormType.LOGIN.toString()) },modifier = Modifier.align(
-            Alignment.CenterHorizontally)) {
-            Text("Remembered your password? Log in")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { onSwitchForm(FormType.REGISTER.toString()) }, modifier = Modifier.align(
-            Alignment.CenterHorizontally)) {
-            Text("Don't have an account? Register")
-        }
-    }
-}
+
+
 
 
 
@@ -242,7 +88,7 @@ fun ForgotPasswordForm(onSwitchForm: (String) -> Unit) {
 fun LoginPreview() {
     AppTheme {
         Surface(tonalElevation = 5.dp) {
-            LoginPage( navController = NavController(LocalContext.current))
+            LoginPage(navController = NavController(LocalContext.current), onLoginSuccess = {}, onRegister = {})
         }
     }
 }

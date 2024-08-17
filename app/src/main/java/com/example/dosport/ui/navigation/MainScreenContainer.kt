@@ -1,42 +1,88 @@
 package com.example.dosport.ui.navigation
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.dosport.ui.components.navigation.Navbar
+import com.example.dosport.viewmodel.AuthViewModel
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreenContainer(navController: NavHostController = rememberNavController()) {
+fun MainScreenContainer(
+    navController: NavHostController = rememberNavController(),
+    authViewModel: AuthViewModel = viewModel()
+) {
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    Scaffold(
+    var isMenuVisible by remember { mutableStateOf(false) }
+    val userIsLoggedIn by authViewModel.userIsLoggedIn
 
-        bottomBar = {
-            if (currentRoute != "login_page") {
-                Navbar(navController)
+    // Закрываем меню при смене маршрута
+    LaunchedEffect(currentRoute) {
+        isMenuVisible = false
+    }
+
+    LaunchedEffect(userIsLoggedIn) {
+        if (userIsLoggedIn) {
+            navController.navigate("main_page") {
+                popUpTo("login_page") { inclusive = true } // Удаляем LoginPage из стека
+            }
+        } else {
+            navController.navigate("login_page") {
+                popUpTo("main_page") { inclusive = true } // Удаляем MainPage из стека
             }
         }
+    }
 
-    ) {
-        Column(
+    Scaffold(
+        bottomBar = {
+            if (userIsLoggedIn && navController.currentDestination?.route != "login_page") {
+                Navbar(
+                    navController = navController,
+                    onMenuClick = { isMenuVisible = !isMenuVisible },
+                )
+            }
+        }
+    ) { paddingValues ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
         ) {
-            Box(modifier = Modifier.weight(1f)) {
-                AppNavHost(navController = navController)
+            // Основной контент приложения
+            Column(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.weight(1f)) {
+                    AppNavHost(navController = navController)
+                }
             }
-            TestRoutingPanel(navController = navController)
+
+            // Панель навигации как модальное окно
+            if (isMenuVisible) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 96.dp) // Отступ для Navbar
+                        .background(Color.Black.copy(alpha = 0.5f))
+                ) {
+                    TestRoutingPanel(navController = navController, onMenuClose = { isMenuVisible = false })
+                }
+            }
         }
     }
 }
+

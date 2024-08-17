@@ -46,17 +46,7 @@ fun MainPage(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Button(
-                    onClick = onProfile,
-                    modifier = Modifier.width(120.dp)
-                ) {
-                    Text("Profile")
-                }
-            }
+
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Programs List",
@@ -104,7 +94,8 @@ fun MainPage(
                     ) {
                         Spacer(modifier = Modifier.weight(1f))
                         CustomButton(
-                            onClick = { selectedProgram?.let { onStart(it) } },
+                            onClick = { selectedProgram?.let {
+                                navController.navigate("program_page/${selectedProgram?.id}") } },
                             enabled = selectedProgram != null,
                             text = "Start"
                         )
