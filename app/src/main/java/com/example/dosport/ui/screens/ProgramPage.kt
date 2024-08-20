@@ -10,12 +10,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.dosport.ui.theme.AppTheme
+import androidx.navigation.NavBackStackEntry
+import com.example.dosport.data.model.Program
+
 
 @Composable
-fun ProgramPage(navController: NavController, id: String? = null) {
-    Surface(color = MaterialTheme.colorScheme.background) {
+fun ProgramPage(navController: NavController, program: Program) {
 
-            Text(text = "Program Page with ID: $id")
+    Surface(color = MaterialTheme.colorScheme.background) {
+        Text(text = "Program Page with ID: ${program.id}")
+        Text(text = "Program Name: ${program.name}")
+        Text(text = "Program Description: ${program.description}")
     }
 }
 
@@ -33,7 +38,7 @@ fun ProgramPage(navController: NavController, id: String? = null) {
 fun ProgramPagePreview() {
     AppTheme {
         Surface(tonalElevation = 5.dp) {
-            ProgramPage(navController = rememberNavController(), id = "123")
+            ProgramPage(navController = rememberNavController(), program = Program(id = "1", name = "Program 1", description = "Description 1"))
         }
     }
 }

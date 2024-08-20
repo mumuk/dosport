@@ -9,15 +9,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.dosport.data.model.Exercise
 import com.example.dosport.ui.theme.AppTheme
 
 @Composable
-fun ExerciseEditPage(navController: NavController, id: String? = null) {
+fun ExerciseEditPage(navController: NavController,exercise: Exercise? = null) {
+
+
     Surface(color = MaterialTheme.colorScheme.background) {
-        if (id == null) {
-            Text(text = "Exercise Edit Page - New")
+        if (exercise != null) {
+            Text(text = "Editing Exercise: ${exercise.name}")
+            // Добавьте элементы редактирования упражнения здесь
         } else {
-            Text(text = "Exercise Edit Page - Editing $id")
+            Text(text = "Exercise not found")
         }
     }
 }
@@ -36,7 +40,7 @@ fun ExerciseEditPage(navController: NavController, id: String? = null) {
 fun ExerciseEditPagePreview() {
     AppTheme {
         Surface(tonalElevation = 5.dp) {
-            ExerciseEditPage(navController = rememberNavController(), id = "123")
+            ExerciseEditPage(navController = rememberNavController(), exercise = Exercise(id = "1", name = "Exercise 1", description = "Description 1"))
         }
     }
 }

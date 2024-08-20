@@ -4,6 +4,7 @@ package com.example.dosport.ui.navigation
 import com.example.dosport.ui.screens.ProfilePage
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -15,55 +16,42 @@ import com.example.dosport.ui.screens.EventEditPage
 import com.example.dosport.ui.screens.ExerciseEditPage
 import com.example.dosport.ui.screens.LoginPage
 import com.example.dosport.ui.screens.MainPage
-import com.example.dosport.ui.screens.Program
+
 import com.example.dosport.ui.screens.ProgramEditPage
 import com.example.dosport.ui.screens.ProgramPage
 import com.example.dosport.ui.screens.ScreenEditPage
-import com.example.dosport.viewmodel.AuthViewModel
+import com.example.dosport.viewmodel.AppViewModel
 
 
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    authViewModel: AuthViewModel = viewModel() // Подключаем ViewModel для отслеживания авторизации
+    appViewModel: AppViewModel = viewModel()
 ) {
-    val userIsLoggedIn by authViewModel.userIsLoggedIn
+    val appState by appViewModel.state.collectAsState()
 
-    // Следим за состоянием авторизации и перенаправляем на соответствующую страницу
-    LaunchedEffect(userIsLoggedIn) {
-        if (userIsLoggedIn) {
-            navController.navigate("main_page") {
-                popUpTo("login_page") { inclusive = true } // Удаляем LoginPage из стека
-            }
-        } else {
-            navController.navigate("login_page") {
-                popUpTo("main_page") { inclusive = true } // Удаляем MainPage из стека
-            }
-        }
-    }
 
-    NavHost(navController, startDestination = "login_page") { // Начальная страница — LoginPage
+
+
+    NavHost(navController, startDestination = "login_page") {
         composable("login_page") {
             LoginPage(
                 navController = navController,
-                onLoginSuccess = {
-                    authViewModel.logIn() // Устанавливаем состояние авторизации как true при успешном входе
+                onLoginSuccess = { user ->
+                    appViewModel.login(user)
                 },
-                onRegister = {
-                    authViewModel.logIn() // Устанавливаем состояние авторизации как true при успешной регистрации
-                navController.navigate("main_page"){
-                    popUpTo("login_page") { inclusive = true }
-                }
+                onRegister = { user ->
+                    appViewModel.login(user) // Устанавливаем состояние авторизации как true при успешной регистрации
+                    navController.navigate("main_page") {
+                        popUpTo("login_page") { inclusive = true }
+                    }
                 }
             )
         }
         composable("main_page") {
             MainPage(
                 navController = navController,
-                programs = listOf(
-                    Program(1, "Morning Exercise", "A set of exercises to start your day."),
-                    Program(2, "Evening Stretching", "Relaxing stretches to end the day.")
-                ),
+                programs = appState.programState.programs,
                 onEdit = {},
                 onStart = {},
                 onCreate = { navController.navigate("program_edit_page") },
@@ -74,34 +62,52 @@ fun AppNavHost(
         composable("profile_page") {
             ProfilePage(
                 profilePicture = painterResource(id = R.drawable.ic_profile_placeholder),
-                userName = "John Doe",
-                userEmail = "johndoe@example.com",
+                userName = "${appState.userState.user?.firstName} ${appState.userState.user?.lastName}",
+                userEmail = appState.userState.user?.email ?: "",
                 onNameChange = {},
                 onEmailChange = {},
                 onPasswordChange = {},
                 onAvatarChange = {},
                 onLanguageChange = {},
                 onLogout = {
-                    authViewModel.logOut() // Устанавливаем состояние авторизации как false при выходе из системы
+                    appViewModel.logout() // Устанавливаем состояние авторизации как false при выходе из системы
                 },
                 navController = navController
             )
         }
         composable("program_page/{id}") { backStackEntry ->
-            ProgramPage(navController = navController, id = backStackEntry.arguments?.getString("id"))
+            val programId = backStackEntry.arguments?.getString("id")
+            val program = appState.programState.programs.find { it.id == programId }
+            if (program != null) {
+                ProgramPage(
+                    navController = navController,
+                    program = program
+                )
+            }
         }
         composable("program_edit_page") { ProgramEditPage(navController = navController) }
         composable("program_edit_page/{id}") { backStackEntry ->
-            ProgramEditPage(navController = navController, id = backStackEntry.arguments?.getString("id"))
+            ProgramEditPage(
+                navController = navController,
+                id = backStackEntry.arguments?.getString("id")
+            )
         }
         composable("exercise_edit_page") { ExerciseEditPage(navController = navController) }
         composable("exercise_edit_page/{id}") { backStackEntry ->
-            ExerciseEditPage(navController = navController, id = backStackEntry.arguments?.getString("id"))
+
+            val exerciseId = backStackEntry.arguments?.getString("id")
+            val exercise = appState.exerciseState.exercises.find { it.id == exerciseId }
+            if (exercise != null) {
+                ExerciseEditPage(
+                    navController = navController,
+                    exercise = exercise
+                )
+            }
         }
         composable("event_edit_page") {
             EventEditPage(
                 navController = navController,
-                onSave = { event ->
+                onSave = {
                     // Логика сохранения события
                     navController.popBackStack() // Возвращаемся на предыдущий экран после сохранения
                 },
@@ -111,10 +117,12 @@ fun AppNavHost(
             )
         }
         composable("event_edit_page/{id}") { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("id")
+            val event = appState.eventState.events.find { it.id == eventId }
             EventEditPage(
                 navController = navController,
-                id = backStackEntry.arguments?.getString("id"),
-                onSave = { event ->
+                event = event,
+                onSave = {
                     // Логика сохранения события
                     navController.popBackStack() // Возвращаемся на предыдущий экран после сохранения
                 },
@@ -125,7 +133,23 @@ fun AppNavHost(
         }
         composable("screen_edit_page") { ScreenEditPage(navController = navController) }
         composable("screen_edit_page/{id}") { backStackEntry ->
-            ScreenEditPage(navController = navController, id = backStackEntry.arguments?.getString("id"))
+            ScreenEditPage(
+                navController = navController,
+                id = backStackEntry.arguments?.getString("id")
+            )
+        }
+    }
+    //Следим за состоянием авторизации и перенаправляем на соответствующую страницу
+    LaunchedEffect(appState.userState.isLoggedIn) {
+        val currentRoute = navController.currentBackStackEntry?.destination?.route
+        if (appState.userState.isLoggedIn && currentRoute != "main_page") {
+            navController.navigate("main_page") {
+                popUpTo("login_page") { inclusive = true } // Удаляем LoginPage из стека
+            }
+        } else if (!appState.userState.isLoggedIn && currentRoute != "login_page") {
+            navController.navigate("login_page") {
+                popUpTo("main_page") { inclusive = true } // Удаляем MainPage из стека
+            }
         }
     }
 }

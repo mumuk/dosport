@@ -37,11 +37,22 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.dosport.ui.screens.FormType
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.dosport.data.model.User
+import com.example.dosport.viewmodel.AppViewModel
+
+
 @Composable
-fun RegistrationForm(onSwitchForm: (String) -> Unit, onRegister: () -> Unit) {
-    var email by remember { mutableStateOf(TextFieldValue("")) }
-    var password by remember { mutableStateOf(TextFieldValue("")) }
-    var confirmPassword by remember { mutableStateOf(TextFieldValue("")) }
+fun RegistrationForm(
+    onSwitchForm: (String) -> Unit,
+    onRegister: (User) -> Unit,
+    appViewModel: AppViewModel = viewModel() // Добавляем AppViewModel как параметр
+) {
+    var email by remember { mutableStateOf(TextFieldValue("JohnDoe@example.com")) }
+    var password by remember { mutableStateOf(TextFieldValue("admin")) }
+    var confirmPassword by remember { mutableStateOf(TextFieldValue("admin")) }
+    var firstName by remember { mutableStateOf(TextFieldValue("John")) }
+    var lastName by remember { mutableStateOf(TextFieldValue("Doe")) }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf<String?>(null) }
@@ -58,6 +69,51 @@ fun RegistrationForm(onSwitchForm: (String) -> Unit, onRegister: () -> Unit) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Поля для ввода имени и фамилии
+        BasicTextField(
+            value = firstName,
+            onValueChange = { firstName = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .border(1.dp, MaterialTheme.colorScheme.primary)
+                .height(56.dp),
+            decorationBox = { innerTextField ->
+                Box(modifier = Modifier.padding(16.dp)) {
+                    if (firstName.text.isEmpty()) {
+                        Text(
+                            text = "First Name",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                    innerTextField()
+                }
+            }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        BasicTextField(
+            value = lastName,
+            onValueChange = { lastName = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .border(1.dp, MaterialTheme.colorScheme.primary)
+                .height(56.dp),
+            decorationBox = { innerTextField ->
+                Box(modifier = Modifier.padding(16.dp)) {
+                    if (lastName.text.isEmpty()) {
+                        Text(
+                            text = "Last Name",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                    innerTextField()
+                }
+            }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Поле Email
         BasicTextField(
@@ -172,7 +228,16 @@ fun RegistrationForm(onSwitchForm: (String) -> Unit, onRegister: () -> Unit) {
                     passwordError = "Passwords do not match"
                 } else {
                     passwordError = null
-                    onRegister() // Успешная регистрация
+                    // Создание объекта User с введенными данными
+                    val user = User(
+                        id = "generated-id", // Или генерируемый идентификатор
+                        firstName = firstName.text,
+                        lastName = lastName.text,
+                        email = email.text,
+                        password = password.text
+                    )
+                    appViewModel.login(user) // Используем login или создаем новый метод для регистрации
+                    onRegister(user) // Успешная регистрация
                 }
             },
             modifier = Modifier
@@ -193,3 +258,4 @@ fun RegistrationForm(onSwitchForm: (String) -> Unit, onRegister: () -> Unit) {
         }
     }
 }
+

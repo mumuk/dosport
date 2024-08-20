@@ -7,3 +7,8 @@ data class Schedule(
     val isRecurring: Boolean = false,
     val recurrenceInterval: Long = 0L
 )
+
+data class ScheduleState(
+    val schedules: List<Schedule> = emptyList(),
+    val selectedSchedule: Schedule? = null
+)

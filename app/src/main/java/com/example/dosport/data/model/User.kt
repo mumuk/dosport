@@ -9,3 +9,8 @@ data class User(
     val password: String = "",
     val uiLanguage: String = "en"
 )
+
+data class UserState(
+    val user: User? = null,
+    val isLoggedIn: Boolean = false
+)

@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.dosport.data.model.User
 import com.example.dosport.ui.components.forms.ForgotPasswordForm
 import com.example.dosport.ui.components.forms.LoginForm
 import com.example.dosport.ui.components.forms.RegistrationForm
@@ -44,8 +45,8 @@ enum class FormType {
 @Composable
 fun LoginPage(
     navController: NavController,
-    onLoginSuccess: () -> Unit,
-    onRegister: () -> Unit
+    onLoginSuccess: (User) -> Unit,
+    onRegister: (User) -> Unit
 ) {
     var currentForm by remember { mutableStateOf(FormType.LOGIN) }
 
@@ -53,7 +54,7 @@ fun LoginPage(
         when (currentForm) {
             FormType.REGISTER -> RegistrationForm(
                 onSwitchForm = { currentForm = FormType.valueOf(it) },
-                onRegister = onRegister  // Передаем onRegister
+                onRegister = onRegister
             )
             FormType.LOGIN -> LoginForm(
                 onSwitchForm = { currentForm = FormType.valueOf(it) },

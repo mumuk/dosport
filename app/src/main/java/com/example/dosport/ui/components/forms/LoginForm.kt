@@ -20,13 +20,23 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.dosport.ui.screens.FormType
 import com.example.dosport.ui.screens.LoginPage
 import com.example.dosport.ui.theme.AppTheme
 
+
+
+import com.example.dosport.data.model.User
+import com.example.dosport.viewmodel.AppViewModel
+
 @Composable
-fun LoginForm(onSwitchForm: (String) -> Unit, onLoginSuccess: () -> Unit) {
+fun LoginForm(
+    onSwitchForm: (String) -> Unit,
+    onLoginSuccess: (User) -> Unit,
+    appViewModel: AppViewModel = viewModel()
+) {
     var email by remember { mutableStateOf(TextFieldValue("admin@example.com")) }
     var password by remember { mutableStateOf(TextFieldValue("admin")) }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -102,7 +112,18 @@ fun LoginForm(onSwitchForm: (String) -> Unit, onLoginSuccess: () -> Unit) {
         Button(
             onClick = {
                 if (email.text == "admin@example.com" && password.text == "admin") {
-                    onLoginSuccess()
+                    // Создание объекта пользователя с заполненными данными
+                    val user = User(
+                        id = "1",
+                        firstName = "Admin",
+                        lastName = "User new",
+                        avatar = "https://example.com/avatar.png",
+                        email = email.text,
+                        password = password.text,
+                        uiLanguage = "en"
+                    )
+                    appViewModel.login(user) // Вызов метода login с новым объектом User
+                    onLoginSuccess(user)
                 } else {
                     loginError = true
                 }
@@ -158,7 +179,6 @@ fun LoginPreview() {
         }
     }
 }
-
 
 
 

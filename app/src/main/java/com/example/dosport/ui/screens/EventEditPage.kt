@@ -36,12 +36,12 @@ import java.util.UUID
 @Composable
 fun EventEditPage(
     navController: NavController,
-    id: String? = null,
+    event: Event? = null,
     onSave: (Event) -> Unit,
     onCancel: () -> Unit
 ) {
 
-    val event = id?.let {loadEventById(it) }
+
     val initialColor = event?.color ?: MaterialTheme.colorScheme.primary
     var eventName by remember { mutableStateOf(event?.name ?: "") }
     var eventDescription by remember { mutableStateOf(event?.description ?: "") }
@@ -125,7 +125,7 @@ fun loadEventById(id: String): Event? {
 fun EventEditPagePreview() {
     AppTheme {
         Surface(tonalElevation = 5.dp) {
-            EventEditPage(navController = rememberNavController(), id = "123", onSave = {}, onCancel = {})
+            EventEditPage(navController = rememberNavController(), event=Event(id = "1", name = "Exercise 1", description = "Description 1"), onSave = {}, onCancel = {})
         }
     }
 }

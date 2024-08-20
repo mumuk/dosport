@@ -21,7 +21,7 @@ fun Navbar(navController: NavController, onMenuClick: () -> Unit ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(96.dp)
+            .height(56.dp)
             .border(1.dp, MaterialTheme.colorScheme.primary)
     ) {
         Row(
@@ -30,15 +30,24 @@ fun Navbar(navController: NavController, onMenuClick: () -> Unit ) {
                 .weight(1f),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(
+                modifier = Modifier
+                .fillMaxHeight(),
+                onClick = { navController.popBackStack() }) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
-            IconButton(onClick = onMenuClick) {
+            IconButton(
+                modifier = Modifier
+                    .fillMaxHeight(),
+                onClick = onMenuClick) {
                 Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
             }
             // "Next page" функциональность, например, можно заменить на вызов navController.navigate(route)
             // который переходит на конкретный следующий маршрут
-            IconButton(onClick = {
+            IconButton(
+                modifier = Modifier
+                    .fillMaxHeight(),
+                onClick = {
                 val currentRoute = navController.currentDestination?.route
                 // Здесь вы можете определить логику перехода на "следующую" страницу
                 if (currentRoute == "main_page") {
@@ -48,7 +57,10 @@ fun Navbar(navController: NavController, onMenuClick: () -> Unit ) {
             }) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Forward")
             }
-            IconButton(onClick = { navController.navigate("profile_page") }) {
+            IconButton(
+                modifier = Modifier
+                    .fillMaxHeight(),
+                onClick = { navController.navigate("profile_page") }) {
                 Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Profile")
             }
         }

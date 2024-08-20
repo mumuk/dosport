@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.example.dosport.data.model.Program
 import com.example.dosport.ui.theme.AppTheme
 
-data class Program(val id: Int, val name: String, val description: String)
 
 @Composable
 fun MainPage(
@@ -46,7 +46,17 @@ fun MainPage(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    onClick = onProfile,
+                    modifier = Modifier.width(120.dp)
+                ) {
+                    Text("Profile")
+                }
+            }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Programs List",
@@ -94,14 +104,22 @@ fun MainPage(
                     ) {
                         Spacer(modifier = Modifier.weight(1f))
                         CustomButton(
-                            onClick = { selectedProgram?.let {
-                                navController.navigate("program_page/${selectedProgram?.id}") } },
+                            onClick = {
+                                selectedProgram?.let {
+                                    navController.navigate("program_page/${selectedProgram?.id}")
+                                }
+                            },
                             enabled = selectedProgram != null,
                             text = "Start"
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         CustomButton(
-                            onClick = { selectedProgram?.let { onEdit(it) } },
+                            onClick = {
+                                selectedProgram?.let {
+                                    onEdit(it)
+                                    navController.navigate("program_edit_page/${selectedProgram?.id}")
+                                }
+                            },
                             enabled = selectedProgram != null,
                             text = "Edit"
                         )
@@ -112,7 +130,9 @@ fun MainPage(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = onCreate,
-                modifier = Modifier.align(Alignment.CenterHorizontally).width(200.dp)
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .width(200.dp)
             ) {
                 Text("Create Program")
             }
@@ -129,7 +149,13 @@ fun CustomButton(onClick: () -> Unit, enabled: Boolean, text: String) {
         enabled = enabled,
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (!enabled) Modifier.border(1.dp, MaterialTheme.colorScheme.primary, shape) else Modifier),
+            .then(
+                if (!enabled) Modifier.border(
+                    1.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape
+                ) else Modifier
+            ),
         shape = shape,
         colors = ButtonDefaults.buttonColors(
             containerColor = if (enabled) MaterialTheme.colorScheme.primary else Color.Transparent,
@@ -173,8 +199,8 @@ fun MainPagePreview() {
     AppTheme {
         Surface(tonalElevation = 5.dp, modifier = Modifier) {
             val samplePrograms = listOf(
-                Program(1, "Morning Exercise", "A set of exercises to start your day."),
-                Program(2, "Evening Stretching", "Relaxing stretches to end the day.")
+                Program("1", "Morning Exercise", "A set of exercises to start your day."),
+                Program("2", "Evening Stretching", "Relaxing stretches to end the day.")
             )
             MainPage(
                 programs = samplePrograms,

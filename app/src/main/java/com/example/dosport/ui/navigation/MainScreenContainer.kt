@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,35 +20,28 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.dosport.viewmodel.AuthViewModel
+
+
+
+import com.example.dosport.viewmodel.AppViewModel
 
 @Composable
 fun MainScreenContainer(
     navController: NavHostController = rememberNavController(),
-    authViewModel: AuthViewModel = viewModel()
+    appViewModel: AppViewModel = viewModel()
 ) {
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     var isMenuVisible by remember { mutableStateOf(false) }
-    val userIsLoggedIn by authViewModel.userIsLoggedIn
+    val appState by appViewModel.state.collectAsState()
+    val userIsLoggedIn = appState.userState.isLoggedIn
 
     // Закрываем меню при смене маршрута
     LaunchedEffect(currentRoute) {
         isMenuVisible = false
     }
 
-    LaunchedEffect(userIsLoggedIn) {
-        if (userIsLoggedIn) {
-            navController.navigate("main_page") {
-                popUpTo("login_page") { inclusive = true } // Удаляем LoginPage из стека
-            }
-        } else {
-            navController.navigate("login_page") {
-                popUpTo("main_page") { inclusive = true } // Удаляем MainPage из стека
-            }
-        }
-    }
+
 
     Scaffold(
         bottomBar = {
@@ -67,7 +61,7 @@ fun MainScreenContainer(
             // Основной контент приложения
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(modifier = Modifier.weight(1f)) {
-                    AppNavHost(navController = navController)
+                    AppNavHost(navController = navController,appViewModel = appViewModel)
                 }
             }
 
@@ -84,5 +78,15 @@ fun MainScreenContainer(
             }
         }
     }
+    LaunchedEffect(userIsLoggedIn) {
+        if (userIsLoggedIn) {
+            navController.navigate("main_page") {
+                popUpTo("login_page") { inclusive = true } // Удаляем LoginPage из стека
+            }
+        } else {
+            navController.navigate("login_page") {
+                popUpTo("main_page") { inclusive = true } // Удаляем MainPage из стека
+            }
+        }
+    }
 }
-
