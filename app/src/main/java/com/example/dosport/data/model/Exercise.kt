@@ -5,10 +5,11 @@ data class Exercise(
     val name: String = "",
     val description: String = "",
     val duration: Long = 0L,
-    val events: List<String> = emptyList()
+    val events: List<Event> = emptyList(),
+    val color: String = "#000000"
 )
 
 data class ExerciseState(
     val exercises: List<Exercise> = emptyList(),
-    val selectedExercise: Exercise? = null
+    val selectedExerciseIndex: Int = 0
 )

@@ -3,6 +3,7 @@ package com.example.dosport.data.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
+
 @Parcelize
 data class AppState(
     val userState:@RawValue UserState = UserState(),

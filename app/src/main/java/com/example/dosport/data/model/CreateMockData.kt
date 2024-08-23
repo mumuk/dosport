@@ -11,28 +11,32 @@ fun createMockData(): Triple<ProgramState, ExerciseState, EventState> {
         name = "Exercise 1",
         description = "First Exercise",
         duration = 8000L,
-        events = listOf(event1.id, event2.id)
+        events = listOf(event1, event2),
+        color = "#FF5733"
     )
     val exercise2 = Exercise(
         id = "2",
         name = "Exercise 2",
         description = "Second Exercise",
         duration = 16000L,
-        events = listOf(event1.id, event2.id, event1.id, event2.id)
+        events = listOf(event1, event2, event1, event2),
+        color = "#33FF57"
     )
     val exercise3 = Exercise(
         id = "3",
         name = "Exercise 3",
         description = "Third Exercise",
         duration = 24000L,
-        events = listOf(event1.id, event2.id, event1.id, event2.id, event1.id, event2.id)
+        events = listOf(event1, event2, event1, event2, event1, event2),
+        color = "#5733FF"
     )
     val exercise4 = Exercise(
         id = "4",
         name = "Exercise 4",
         description = "Fourth Exercise",
         duration = 8000L,
-        events = listOf(event1.id, event2.id)
+        events = listOf(event1, event2),
+        color = "#FF3357"
     )
 
     // Создаем программы и связываем их с упражнениями
@@ -41,28 +45,43 @@ fun createMockData(): Triple<ProgramState, ExerciseState, EventState> {
         name = "Program 1",
         description = "First Program",
         duration = 24000L,
-        exercises = listOf(exercise1.id, exercise2.id)
+        exercises = listOf(
+            exercise1,
+//            exercise2
+        )
     )
     val program2 = Program(
         id = "2",
         name = "Program 2",
         description = "Second Program",
         duration = 48000L,
-        exercises = listOf(exercise1.id, exercise2.id, exercise3.id)
+        exercises = listOf(
+//            exercise1,
+//            exercise2,
+            exercise4
+        )
     )
     val program3 = Program(
         id = "3",
         name = "Program 3",
         description = "Third Program",
         duration = 72000L,
-        exercises = listOf(exercise1.id, exercise2.id, exercise3.id, exercise4.id)
+        exercises = listOf(
+//            exercise1,
+//            exercise2,
+            exercise3,
+//            exercise4
+        )
     )
     val program4 = Program(
         id = "4",
         name = "Program 4",
         description = "Fourth Program",
         duration = 48000L,
-        exercises = listOf(exercise1.id, exercise2.id)
+        exercises = listOf(
+//            exercise1,
+            exercise2
+        )
     )
 
     // Возвращаем состояния программ, упражнений и событий
@@ -73,16 +92,5 @@ fun createMockData(): Triple<ProgramState, ExerciseState, EventState> {
     )
 }
 
-// Присваиваем значения отдельными вызовами
-val mockData = createMockData()
 
-val programState = mockData.first
-val exerciseState = mockData.second
-val eventState = mockData.third
 
-// Обновляем глобальное состояние приложения
-val appState = AppState(
-    programState = programState,
-    exerciseState = exerciseState,
-    eventState = eventState
-)

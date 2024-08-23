@@ -21,15 +21,29 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.dosport.data.model.Program
 import com.example.dosport.ui.theme.AppTheme
+import com.example.dosport.viewmodel.AppViewModel
 
 
 @Composable
 fun MainPage(
+    appViewModel: AppViewModel,
     navController: NavController,
-    programs: List<Program>,
-    onEdit: (Program) -> Unit,
-    onStart: (Program) -> Unit,
-    onCreate: () -> Unit,
+    programs: List<Program> = appViewModel.state.collectAsState().value.programState.programs,
+    onEdit: (Program) -> Unit = { program ->
+        println("onEdit called with program: $program")
+
+        appViewModel.selectProgram(
+            program
+        )
+    },
+    onStart: (Program) -> Unit = { program ->
+        println("onStart called with program: $program")
+        appViewModel
+            .selectProgram(program)
+    },
+    onCreate: () -> Unit = {
+        navController.navigate("program_create_page")
+    },
     onProfile: () -> Unit,
     onCalendar: () -> Unit
 ) {
@@ -46,18 +60,18 @@ fun MainPage(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Button(
-                    onClick = onProfile,
-                    modifier = Modifier.width(120.dp)
-                ) {
-                    Text("Profile")
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
+//            Row(
+//                horizontalArrangement = Arrangement.End,
+//                modifier = Modifier.fillMaxWidth()
+//            ) {
+//                Button(
+//                    onClick = onProfile,
+//                    modifier = Modifier.width(120.dp)
+//                ) {
+//                    Text("Profile")
+//                }
+//            }
+//            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Programs List",
                 style = MaterialTheme.typography.headlineSmall,
@@ -106,6 +120,8 @@ fun MainPage(
                         CustomButton(
                             onClick = {
                                 selectedProgram?.let {
+//
+                                    appViewModel.selectProgram(program = it)
                                     navController.navigate("program_page/${selectedProgram?.id}")
                                 }
                             },
@@ -116,7 +132,7 @@ fun MainPage(
                         CustomButton(
                             onClick = {
                                 selectedProgram?.let {
-                                    onEdit(it)
+                                    appViewModel.selectProgram(program = it)
                                     navController.navigate("program_edit_page/${selectedProgram?.id}")
                                 }
                             },
@@ -184,33 +200,33 @@ fun ProgramItem(program: Program, isSelected: Boolean, onSelect: (Program) -> Un
     }
 }
 
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    name = "Dark"
-)
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    name = "Light"
-)
-@Composable
-fun MainPagePreview() {
-    AppTheme {
-        Surface(tonalElevation = 5.dp, modifier = Modifier) {
-            val samplePrograms = listOf(
-                Program("1", "Morning Exercise", "A set of exercises to start your day."),
-                Program("2", "Evening Stretching", "Relaxing stretches to end the day.")
-            )
-            MainPage(
-                programs = samplePrograms,
-                onEdit = {},
-                onStart = {},
-                onCreate = {},
-                onProfile = {},
-                onCalendar = {},
-                navController = NavController(LocalContext.current)
-            )
-        }
-    }
-}
+//@Preview(
+//    showBackground = true,
+//    uiMode = Configuration.UI_MODE_NIGHT_YES,
+//    name = "Dark"
+//)
+//@Preview(
+//    showBackground = true,
+//    uiMode = Configuration.UI_MODE_NIGHT_NO,
+//    name = "Light"
+//)
+//@Composable
+//fun MainPagePreview() {
+//    AppTheme {
+//        Surface(tonalElevation = 5.dp, modifier = Modifier) {
+//            val samplePrograms = listOf(
+//                Program("1", "Morning Exercise", "A set of exercises to start your day."),
+//                Program("2", "Evening Stretching", "Relaxing stretches to end the day.")
+//            )
+//            MainPage(
+//                programs = samplePrograms,
+//                onEdit = {},
+//                onStart = {},
+//                onCreate = {},
+//                onProfile = {},
+//                onCalendar = {},
+//                navController = NavController(LocalContext.current)
+//            )
+//        }
+//    }
+//}

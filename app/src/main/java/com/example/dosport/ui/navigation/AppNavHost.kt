@@ -50,6 +50,7 @@ fun AppNavHost(
         }
         composable("main_page") {
             MainPage(
+                appViewModel = appViewModel,
                 navController = navController,
                 programs = appState.programState.programs,
                 onEdit = {},
@@ -69,6 +70,9 @@ fun AppNavHost(
                 onPasswordChange = {},
                 onAvatarChange = {},
                 onLanguageChange = {},
+                onSave = {
+                    navController.navigate("main_page")
+                },
                 onLogout = {
                     appViewModel.logout() // Устанавливаем состояние авторизации как false при выходе из системы
                 },
@@ -79,10 +83,7 @@ fun AppNavHost(
             val programId = backStackEntry.arguments?.getString("id")
             val program = appState.programState.programs.find { it.id == programId }
             if (program != null) {
-                ProgramPage(
-                    navController = navController,
-                    program = program
-                )
+                ProgramPage(navController = navController)
             }
         }
         composable("program_edit_page") { ProgramEditPage(navController = navController) }

@@ -12,7 +12,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dosport.ui.theme.AppTheme
 
 @Composable
-fun ProgramEditPage(navController: NavController, id: String? = null) {
+fun ProgramEditPage(
+    navController: NavController,
+    id: String? = null,
+) {
     Surface(color = MaterialTheme.colorScheme.background) {
         if (id == null) {
             Text(text = "Program Edit Page - New")

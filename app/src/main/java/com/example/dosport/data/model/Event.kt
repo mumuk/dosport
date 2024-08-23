@@ -13,12 +13,10 @@ data class Event(
     val name: String = "",
     val description: String = "",
     val duration: Long = 0L,
-    val color: String = "",
+    val color: String = "#FFFFFF",
     val eventScreenId: String = "",
     val screenType: ScreenType? = null,
     val link: String? = null,
-    val textColor: String? = null,
-    val backgroundColor: String? = null
 )
 
 
@@ -26,5 +24,5 @@ data class Event(
 
 data class EventState(
     val events: List<Event> = emptyList(),
-    val selectedEvent: Event? = null
+    val selectedEventIndex: Int = 0,
 )
