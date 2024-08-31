@@ -14,15 +14,18 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ControlBar(
     isStarted: Boolean,             // Состояние, показывающее, начат ли процесс
-    onStart: () -> Unit,            // Callback нажатия кнопки Start
+    onStart: () -> Unit,
+    onResume: () -> Unit,           // Callback нажатия кнопки Resume
     onPause: () -> Unit,            // Callback нажатия кнопки Pause
     onDone: () -> Unit,             // Callback нажатия кнопки Done
-    onEdit: () -> Unit,             // Callback нажатия кнопки Edit
+    onEdit: () -> Unit, // Callback нажатия кнопки Edit
+    selectedExerciseIndex: Int,
+    selectedEventIndex: Int,
 ) {
     // Задаем общие параметры для всех кнопок
-    val buttonWidth = 90.dp
+    val buttonWidth = 76.dp
     val buttonTextSize = 16.sp
-    val horizontalPadding = 8.dp
+    val horizontalPadding = 2.dp
     val verticalPadding = 4.dp
     val textModifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)
 
@@ -48,7 +51,8 @@ fun ControlBar(
         // Кнопка Resume / Pause
         if (!isStarted) {
             Button(
-                onClick = onStart,
+                onClick = onResume,
+                enabled = !(selectedEventIndex == 0 && selectedExerciseIndex == 0),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
@@ -98,8 +102,9 @@ fun ControlBar(
         Button(
             onClick = onEdit,
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.tertiary
+                containerColor = MaterialTheme.colorScheme.primary
             ),
+            contentPadding = PaddingValues(horizontal = horizontalPadding, vertical = verticalPadding),
             modifier = Modifier.width(buttonWidth)
         ) {
             Text(text = "Edit",

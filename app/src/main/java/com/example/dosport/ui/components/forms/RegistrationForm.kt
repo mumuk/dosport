@@ -49,6 +49,7 @@ fun RegistrationForm(
     appViewModel: AppViewModel = viewModel() // Добавляем AppViewModel как параметр
 ) {
     var email by remember { mutableStateOf(TextFieldValue("JohnDoe@example.com")) }
+    var emailError by remember { mutableStateOf<String?>(null) }
     var password by remember { mutableStateOf(TextFieldValue("admin")) }
     var confirmPassword by remember { mutableStateOf(TextFieldValue("admin")) }
     var firstName by remember { mutableStateOf(TextFieldValue("John")) }
@@ -210,6 +211,15 @@ fun RegistrationForm(
         )
 
         // Отображение ошибки, если пароли не совпадают
+        if (emailError != null) {
+            Text(
+                text = emailError!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 8.dp).align(Alignment.CenterHorizontally)
+            )
+        }
+
         if (passwordError != null) {
             Text(
                 text = passwordError!!,
@@ -224,6 +234,10 @@ fun RegistrationForm(
         // Кнопка Register
         Button(
             onClick = {
+                emailError = validateEmail(email.text)
+                if (emailError != null) {
+                    return@Button
+                }
                 if (password.text != confirmPassword.text) {
                     passwordError = "Passwords do not match"
                 } else {

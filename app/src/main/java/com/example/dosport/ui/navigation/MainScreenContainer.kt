@@ -3,7 +3,9 @@ package com.example.dosport.ui.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -42,6 +44,17 @@ fun MainScreenContainer(
     }
 
 
+    LaunchedEffect(userIsLoggedIn) {
+        if (userIsLoggedIn) {
+            navController.navigate("main_page") {
+                popUpTo("login_page") { inclusive = true } // Удаляем LoginPage из стека
+            }
+        } else {
+            navController.navigate("login_page") {
+                popUpTo("main_page") { inclusive = true } // Удаляем MainPage из стека
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -75,18 +88,10 @@ fun MainScreenContainer(
                 ) {
                     TestRoutingPanel(navController = navController, onMenuClose = { isMenuVisible = false })
                 }
+//                Spacer(modifier = Modifier.height(16.dp))
             }
+
         }
     }
-    LaunchedEffect(userIsLoggedIn) {
-        if (userIsLoggedIn) {
-            navController.navigate("main_page") {
-                popUpTo("login_page") { inclusive = true } // Удаляем LoginPage из стека
-            }
-        } else {
-            navController.navigate("login_page") {
-                popUpTo("main_page") { inclusive = true } // Удаляем MainPage из стека
-            }
-        }
-    }
+
 }

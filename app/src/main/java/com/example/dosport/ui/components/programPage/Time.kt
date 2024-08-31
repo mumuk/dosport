@@ -16,24 +16,11 @@ import kotlinx.coroutines.delay
 import com.example.dosport.data.model.Event
 
 
-
 @Composable
 fun Timer(
-    totalTime: Long,
-    onTimerEnd: () -> Unit,
+    timeLeft: Long,
     modifier: Modifier = Modifier
 ) {
-    var timeLeft by remember { mutableStateOf(totalTime) }
-
-    LaunchedEffect(timeLeft) {
-        if (timeLeft > 0) {
-            delay(1000L)
-            timeLeft -= 1000L
-        } else {
-            onTimerEnd()
-        }
-    }
-
     Text(
         text = "Time left: ${timeLeft / 1000}s",
         fontSize = 20.sp,
@@ -43,31 +30,45 @@ fun Timer(
     )
 }
 
+
 @Composable
 fun TimeBar(
-    exercise: Exercise,
+    isStarted: Boolean,
+    exerciseIndex: Int,
     event: Event,
     currentEventIndex: Int,
     totalEvents: Int,
     onEventChange: (Int) -> Unit,
+    onExerciseFinish: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var timeLeft by remember { mutableStateOf(event.duration) }
 
-    LaunchedEffect(event) {
+    LaunchedEffect(exerciseIndex,event) {
+        println( " Time Bar - ExerciseIndex: $exerciseIndex")
+        println( "Time Bar - Event: $event")
         timeLeft = event.duration // Сбрасываем таймер при переключении события
     }
 
-    LaunchedEffect(timeLeft) {
-        if (timeLeft > 0) {
-            delay(1000L)
-            timeLeft -= 1000L
-        } else {
-            if (currentEventIndex < totalEvents - 1) {
-                onEventChange(currentEventIndex + 1) // Переключаемся на следующее событие
+println("isStarted: $isStarted")
+
+    LaunchedEffect(timeLeft, isStarted) {
+        if (isStarted) {
+            if (timeLeft > 0) {
+                delay(1000L)
+                timeLeft -= 1000L
+            } else {
+
+
+                if (currentEventIndex < totalEvents - 1) {
+                    onEventChange(currentEventIndex + 1) // Переключаемся на следующее событие
+                } else {
+                    onExerciseFinish() // Завершаем упражнение
+                }
             }
         }
     }
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -77,10 +78,7 @@ fun TimeBar(
             .padding(16.dp)
     ) {
         Timer(
-            totalTime = timeLeft,
-            onTimerEnd = {
-                // Логика уже встроена в LaunchedEffect
-            }
+            timeLeft = timeLeft,
         )
     }
 }

@@ -35,10 +35,6 @@ fun ForgotPasswordForm(onSwitchForm: (String) -> Unit) {
     var emailError by remember { mutableStateOf<String?>(null) }
     var successMessage by remember { mutableStateOf<String?>(null) }
 
-    val emailPattern = Pattern.compile(
-        "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-    )
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,17 +75,9 @@ fun ForgotPasswordForm(onSwitchForm: (String) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                when {
-                    email.text.isEmpty() -> {
-                        emailError = "Email cannot be empty"
-                    }
-                    !emailPattern.matcher(email.text).matches() -> {
-                        emailError = "Please enter a valid email address"
-                    }
-                    else -> {
-                        emailError = null
-                        successMessage = "A password reset link has been sent to your email"
-                    }
+                emailError = validateEmail(email.text)
+                if (emailError == null) {
+                    successMessage = "A password reset link has been sent to your email"
                 }
             },
             modifier = Modifier

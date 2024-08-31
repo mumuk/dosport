@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,8 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.dosport.data.model.AppState
 import com.example.dosport.data.model.Program
 import com.example.dosport.ui.components.programPage.ControlBar
@@ -33,25 +32,22 @@ import createMockData
 
 @Composable
 fun ProgramPage(
-    navController: NavController,
-    appViewModel: AppViewModel = viewModel() // Используем ViewModel для доступа к состоянию
+
+    program: Program? = null,
+    appViewModel: AppViewModel = viewModel()
 ) {
+    val appState by appViewModel.state.collectAsState()
+    val isInProcess by appViewModel.isInProcess.collectAsState()
 
-    println("ProgramPage =========>> ${appViewModel.state.collectAsState().value.programState}")
-    // Получаем текущее состояние приложения
-    val appState = appViewModel.state.collectAsState().value
+    if (program != null) {
 
-    // Получаем текущую выбранную программу
-    val selectedProgram = appState.programState.selectedProgram
-
-    // Проверяем, есть ли выбранная программа
-    if (selectedProgram != null) {
         // Получаем текущий активный индекс упражнения и события
         val selectedExerciseIndex = appState.exerciseState.selectedExerciseIndex
-        val selectedExercise = selectedProgram.exercises.getOrNull(selectedExerciseIndex)
-
+        val selectedExercise = program.exercises.getOrNull(selectedExerciseIndex)
+        println("Index of selected exercise: $selectedExerciseIndex")
         val selectedEventIndex = appState.eventState.selectedEventIndex
-        val selectedEvent = selectedExercise?.events?.getOrNull(selectedEventIndex ?: 0)
+        val selectedEvent = selectedExercise?.events?.getOrNull(selectedEventIndex)
+        println("Index of selected event: $selectedEventIndex")
 
         if (selectedExercise != null && selectedEvent != null) {
             Column(
@@ -69,62 +65,74 @@ fun ProgramPage(
 
                     Column(
                         modifier = Modifier
-                            .padding(top=16.dp),
+                            .padding(top = 16.dp),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
 
                         Column(
                             modifier = Modifier
-                                .weight(1f)){
-
-
-                        // Заголовок программы
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.CenterHorizontally)
+                                .weight(1f)
                         ) {
-                            ProgramTitle(program = selectedProgram)
-                        }
 
 
+                            // Заголовок программы
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally)
+                            ) {
+                                ProgramTitle(program = program)
+                            }
 
-                        // Описание упражнения
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.CenterHorizontally)
-                        ) {
-                            ExerciseDescription(exercise = selectedExercise)
-                        }
 
-                        // Описание события
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.CenterHorizontally)
-                        ) {
-                            EventDescription(event = selectedEvent)
-                        }
+                            // Описание упражнения
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally)
+                            ) {
+                                ExerciseDescription(exercise = selectedExercise)
+                            }
+
+                            // Описание события
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally)
+                            ) {
+                                EventDescription(event = selectedEvent)
+                            }
                             Spacer(modifier = Modifier.weight(1f))
-                        // Временная панель (Time Bar)
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.CenterHorizontally)
-                        ) {
+                            // Временная панель (Time Bar)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally)
+                            ) {
 
 
-                            TimeBar(
-                                exercise = selectedExercise,
-                                event = selectedEvent,
-                                currentEventIndex = selectedEventIndex ?: 0,
-                                totalEvents = selectedExercise.events.size,
-                                onEventChange = { newEventIndex ->
-                                    appViewModel.selectCurrentEventIndex(newEventIndex)
-                                }
-                            )
-                        }
+                                TimeBar(
+                                    isStarted = isInProcess,
+                                    exerciseIndex = selectedExerciseIndex ?: 0,
+                                    event = selectedEvent,
+                                    currentEventIndex = selectedEventIndex ?: 0,
+                                    totalEvents = selectedExercise.events.size,
+                                    onEventChange = { newEventIndex ->
+                                        appViewModel.selectCurrentEventIndex(newEventIndex)
+                                    },
+                                    onExerciseFinish = {
+                                        if (selectedExerciseIndex > program.exercises.size-1) {
+                                            appViewModel.selectCurrentEventIndex(0)
+                                            appViewModel.selectCurrentExerciseIndex(
+                                                selectedExerciseIndex + 1
+                                            )
+                                        } else {
+                                            appViewModel.endProgram()
+                                            println("selectedExerciseIndex: $selectedExerciseIndex")
+                                            println("selectedEventIndex: $selectedEventIndex")
+                                        }
+                                    })
+                            }
                         }
                         Spacer(modifier = Modifier.height(18.dp))
 
@@ -137,7 +145,8 @@ fun ProgramPage(
                         ) {
                             // Program Progress Bar
                             ProgressBar(
-                                exercises = selectedProgram.exercises,
+
+                                exercises = program.exercises,
                                 selectedExerciseIndex = selectedExerciseIndex,
                                 selectedEventIndex = selectedEventIndex,
                                 onExerciseSelected = { index ->
@@ -148,30 +157,35 @@ fun ProgramPage(
                                 },
                                 onResetEventIndex = {
                                     appViewModel.selectCurrentEventIndex(eventIndex = 0)  // Сбрасываем индекс события на 0
-                                }
+                                },
+
 
                                 )
                         }
-
 
 
                     }
                 }
                 // Панель управления
                 ControlBar(
-                    onStart = { /* Логика запуска */ },
-                    onPause = { /* Логика паузы */ },
-                    onDone = { /* Логика завершения */ },
+                    selectedExerciseIndex= selectedExerciseIndex,
+                    selectedEventIndex = selectedEventIndex,
+                    onStart = { appViewModel.startProgram() },
+                    onResume = { appViewModel.resumeProgram() },
+                    onPause = { appViewModel.pauseProgram() },
+                    onDone = { appViewModel.endProgram() },
                     onEdit = {
 
                     },
-                    isStarted = false
+                    isStarted = isInProcess
                 )
             }
         } else {
-            // Если программа не выбрана, можно показать сообщение
-            Text("No Program Selected")
+            Text("No Exercise or Event Selected")
         }
+    } else {
+        // Если программа не выбрана, можно показать сообщение
+        Text("No Program Selected")
     }
 }
 
@@ -202,7 +216,6 @@ fun ProgramPagePreview() {
     AppTheme {
         Surface(tonalElevation = 5.dp) {
             ProgramPage(
-                navController = rememberNavController(),
                 appViewModel = appViewModel
             )
         }

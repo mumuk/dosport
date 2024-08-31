@@ -200,33 +200,34 @@ fun ProgramItem(program: Program, isSelected: Boolean, onSelect: (Program) -> Un
     }
 }
 
-//@Preview(
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_YES,
-//    name = "Dark"
-//)
-//@Preview(
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_NO,
-//    name = "Light"
-//)
-//@Composable
-//fun MainPagePreview() {
-//    AppTheme {
-//        Surface(tonalElevation = 5.dp, modifier = Modifier) {
-//            val samplePrograms = listOf(
-//                Program("1", "Morning Exercise", "A set of exercises to start your day."),
-//                Program("2", "Evening Stretching", "Relaxing stretches to end the day.")
-//            )
-//            MainPage(
-//                programs = samplePrograms,
-//                onEdit = {},
-//                onStart = {},
-//                onCreate = {},
-//                onProfile = {},
-//                onCalendar = {},
-//                navController = NavController(LocalContext.current)
-//            )
-//        }
-//    }
-//}
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "Dark"
+)
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    name = "Light"
+)
+@Composable
+fun MainPagePreview() {
+    AppTheme {
+        Surface(tonalElevation = 5.dp, modifier = Modifier) {
+            val samplePrograms = listOf(
+                Program("1", "Morning Exercise", "A set of exercises to start your day."),
+                Program("2", "Evening Stretching", "Relaxing stretches to end the day.")
+            )
+            MainPage(
+                programs = samplePrograms,
+                onEdit = {},
+                onStart = {},
+                onCreate = {},
+                onProfile = {},
+                onCalendar = {},
+                navController = NavController(LocalContext.current),
+                appViewModel = AppViewModel()
+            )
+        }
+    }
+}

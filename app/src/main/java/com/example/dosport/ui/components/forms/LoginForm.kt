@@ -30,6 +30,21 @@ import com.example.dosport.ui.theme.AppTheme
 
 import com.example.dosport.data.model.User
 import com.example.dosport.viewmodel.AppViewModel
+import java.util.regex.Pattern
+
+
+fun validateEmail(email: String): String? {
+
+    val emailPattern = Pattern.compile(
+        "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+    )
+
+    return when {
+        email.isEmpty() -> "Email cannot be empty"
+        !emailPattern.matcher(email).matches() -> "Please enter a valid email address"
+        else -> null // Если ошибок нет, возвращаем null
+    }
+}
 
 @Composable
 fun LoginForm(
@@ -38,6 +53,7 @@ fun LoginForm(
     appViewModel: AppViewModel = viewModel()
 ) {
     var email by remember { mutableStateOf(TextFieldValue("admin@example.com")) }
+    var emailError by remember { mutableStateOf<String?>(null) }
     var password by remember { mutableStateOf(TextFieldValue("admin")) }
     var passwordVisible by remember { mutableStateOf(false) }
     var loginError by remember { mutableStateOf(false) }
@@ -111,7 +127,8 @@ fun LoginForm(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                if (email.text == "admin@example.com" && password.text == "admin") {
+                emailError = validateEmail(email.text)
+                if (emailError==null && password.text == "admin") {
                     // Создание объекта пользователя с заполненными данными
                     val user = User(
                         id = "1",
@@ -183,105 +200,3 @@ fun LoginPreview() {
 
 
 
-//@Composable
-//fun LoginForm(onSwitchForm: (String) -> Unit, onLoginSuccess: () -> Unit) {
-//    var email by remember { mutableStateOf(TextFieldValue("admin@example.com")) }
-//    var password by remember { mutableStateOf(TextFieldValue("admin")) }
-//    var loginError by remember { mutableStateOf(false) }
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(32.dp),
-//        verticalArrangement = Arrangement.Center
-//    ) {
-//        Text(
-//            text = "Login Form",
-//            style = MaterialTheme.typography.titleLarge,
-//            modifier = Modifier.align(Alignment.CenterHorizontally)
-//        )
-//        Spacer(modifier = Modifier.height(16.dp))
-//        BasicTextField(
-//            value = email,
-//            onValueChange = { email = it },
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp)
-//                .border(1.dp, MaterialTheme.colorScheme.primary),
-//            decorationBox = { innerTextField ->
-//                Box(modifier = Modifier.padding(16.dp)) {
-//                    if (email.text.isEmpty()) {
-//                        Text(
-//                            text = "Email",
-//                            style = MaterialTheme.typography.bodyMedium
-//                        )
-//                    }
-//                    innerTextField()
-//                }
-//            }
-//        )
-//        Spacer(modifier = Modifier.height(8.dp))
-//        BasicTextField(
-//            value = password,
-//            onValueChange = { password = it },
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp)
-//                .border(1.dp, MaterialTheme.colorScheme.primary),
-//            decorationBox = { innerTextField ->
-//                Box(modifier = Modifier.padding(16.dp)) {
-//                    if (password.text.isEmpty()) {
-//                        Text(
-//                            text = "Password",
-//                            style = MaterialTheme.typography.bodyMedium
-//                        )
-//                    }
-//                    innerTextField()
-//                }
-//            }
-//        )
-//        Spacer(modifier = Modifier.height(16.dp))
-//        Button(
-//            onClick = {
-//
-//                if (email.text == "admin@example.com" && password.text == "admin") {
-//                    onLoginSuccess()
-//                } else {
-//                    loginError = true
-//                }
-//            },
-//            modifier = Modifier
-//                .align(Alignment.CenterHorizontally)
-//                .padding(end = 16.dp)
-//                .width(200.dp)
-//        ) {
-//            Text("Login")
-//        }
-//        if (loginError) {
-//            Spacer(modifier = Modifier.height(8.dp))
-//            Text(
-//                text = "Invalid email or password",
-//                color = MaterialTheme.colorScheme.error,
-//                modifier = Modifier.align(Alignment.CenterHorizontally)
-//            )
-//        }
-//        Spacer(modifier = Modifier.height(8.dp))
-//        TextButton(
-//            onClick = { onSwitchForm(FormType.FORGOT_PASSWORD.name)},
-//            modifier = Modifier
-//                .align(Alignment.CenterHorizontally)
-//                .padding(end = 16.dp)
-//        ) {
-//            Text("Forgot password?")
-//        }
-//        Spacer(modifier = Modifier.height(8.dp))
-//        TextButton(
-//            onClick = { onSwitchForm(FormType.REGISTER.name) },
-//            modifier = Modifier
-//                .align(Alignment.CenterHorizontally)
-//                .padding(end = 16.dp)
-//        ) {
-//            Text("Don't have an account? Register")
-//        }
-//    }
-//}

@@ -6,6 +6,7 @@ import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class AppState(
+    val isLoading: Boolean = true,
     val userState:@RawValue UserState = UserState(),
     val programState:@RawValue ProgramState = ProgramState(),
     val exerciseState:@RawValue ExerciseState = ExerciseState(),

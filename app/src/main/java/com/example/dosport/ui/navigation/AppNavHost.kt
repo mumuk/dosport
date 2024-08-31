@@ -83,7 +83,7 @@ fun AppNavHost(
             val programId = backStackEntry.arguments?.getString("id")
             val program = appState.programState.programs.find { it.id == programId }
             if (program != null) {
-                ProgramPage(navController = navController)
+                ProgramPage(program = program)
             }
         }
         composable("program_edit_page") { ProgramEditPage(navController = navController) }
