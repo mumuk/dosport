@@ -2,12 +2,12 @@ package com.example.dosport.data.model
 
 
 sealed class Screen(val route: String) {
-    object Main : Screen("main")
-    object Profile : Screen("profile")
-    object ProgramEdit : Screen("program_edit")
-    object ExerciseEdit : Screen("exercise_edit")
-    object EventEdit : Screen("event_edit")
-    object Login : Screen("login")
+    data object Main : Screen("main")
+    data object Profile : Screen("profile")
+    data object ProgramEdit : Screen("program_edit")
+    data object ExerciseEdit : Screen("exercise_edit")
+    data object EventEdit : Screen("event_edit")
+    data object Login : Screen("login")
 
     // Добавьте другие экраны вашего приложения
 }

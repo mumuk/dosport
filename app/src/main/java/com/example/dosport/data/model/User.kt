@@ -7,7 +7,8 @@ data class User(
     val avatar: String = "",
     val email: String = "",
     val password: String = "",
-    val uiLanguage: String = "en"
+    val uiLanguage: String = "en",
+    val friendsIds: List<String> = emptyList(),
 )
 
 data class UserState(

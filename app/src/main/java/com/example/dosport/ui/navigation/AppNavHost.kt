@@ -86,10 +86,11 @@ fun AppNavHost(
                 ProgramPage(program = program)
             }
         }
-        composable("program_edit_page") { ProgramEditPage(navController = navController) }
+        composable("program_edit_page") { ProgramEditPage(navController = navController,appViewModel = appViewModel,) }
         composable("program_edit_page/{id}") { backStackEntry ->
             ProgramEditPage(
                 navController = navController,
+                appViewModel = appViewModel,
                 id = backStackEntry.arguments?.getString("id")
             )
         }

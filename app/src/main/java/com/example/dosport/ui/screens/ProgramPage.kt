@@ -30,6 +30,7 @@ import com.example.dosport.ui.theme.AppTheme
 import com.example.dosport.viewmodel.AppViewModel
 import createMockData
 
+// TODO: Resume/Pause Button must be inactive after end of the program and must be "Pause" 
 @Composable
 fun ProgramPage(
 
@@ -121,19 +122,26 @@ fun ProgramPage(
                                         appViewModel.selectCurrentEventIndex(newEventIndex)
                                     },
                                     onExerciseFinish = {
-                                        if (selectedExerciseIndex > program.exercises.size-1) {
-                                            appViewModel.selectCurrentEventIndex(0)
-                                            appViewModel.selectCurrentExerciseIndex(
-                                                selectedExerciseIndex + 1
-                                            )
-                                        } else {
+                                        val isLastEvent = selectedEventIndex == selectedExercise.events.size - 1
+                                        val isLastExercise = selectedExerciseIndex == program.exercises.size - 1
+
+                                        if (isLastEvent && isLastExercise) {
+                                            // Если это последнее событие последнего упражнения, завершаем программу
                                             appViewModel.endProgram()
-                                            println("selectedExerciseIndex: $selectedExerciseIndex")
-                                            println("selectedEventIndex: $selectedEventIndex")
+                                            println("Program finished")
+                                        } else if (isLastEvent) {
+                                            // Если это последнее событие, но упражнение не последнее, переходим к следующему упражнению
+                                            appViewModel.selectCurrentEventIndex(0)
+                                            appViewModel.selectCurrentExerciseIndex(selectedExerciseIndex + 1)
+                                        } else {
+                                            println("onExerciseFinish else block")
+                                            appViewModel.selectCurrentEventIndex(selectedEventIndex + 1)
                                         }
-                                    })
+                                    }
+)
                             }
                         }
+
                         Spacer(modifier = Modifier.height(18.dp))
 
                         // Прогресс бар программы и упражнений

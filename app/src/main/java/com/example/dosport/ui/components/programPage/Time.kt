@@ -44,13 +44,13 @@ fun TimeBar(
 ) {
     var timeLeft by remember { mutableStateOf(event.duration) }
 
-    LaunchedEffect(exerciseIndex,event) {
-        println( " Time Bar - ExerciseIndex: $exerciseIndex")
-        println( "Time Bar - Event: $event")
+    LaunchedEffect(exerciseIndex, event) {
+        println(" Time Bar - ExerciseIndex: $exerciseIndex")
+        println("Time Bar - Event: $event")
         timeLeft = event.duration // Сбрасываем таймер при переключении события
     }
 
-println("isStarted: $isStarted")
+//    println("isStarted: $isStarted")
 
     LaunchedEffect(timeLeft, isStarted) {
         if (isStarted) {

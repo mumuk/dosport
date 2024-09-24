@@ -1,13 +1,24 @@
 package com.example.dosport.data.model
 
+
+enum class Status {
+    PRIVATE,
+    FRIENDS,
+    PUBLIC,
+
+}
+
 data class Program(
     val id: String = "",
-    val status: String = "private",
-    val name: String = "",
+    val status: String = Status.PUBLIC.name,
+    override val name: String,
     val description: String = "",
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+    val createdBy: String = "",
     val duration: Long = 0L,
     val exercises: List<Exercise> = emptyList()
-)
+): ListItem
 
 
 data class ProgramState(

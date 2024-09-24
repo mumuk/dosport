@@ -68,6 +68,7 @@ fun ProgressBar(
             exercises.forEachIndexed { exerciseIndex, exercise ->
                 val exerciseWidthFraction =
                     exercise.duration.toFloat() / totalProgramDuration.toFloat()
+                println("----------> exerciseWidthFraction: $exerciseWidthFraction, exercise: $exercise")
                 val isSelectedExercise = exerciseIndex == selectedExerciseIndex
 
                 Box(

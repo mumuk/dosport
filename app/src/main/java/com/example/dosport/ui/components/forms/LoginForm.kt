@@ -137,6 +137,7 @@ fun LoginForm(
                         avatar = "https://example.com/avatar.png",
                         email = email.text,
                         password = password.text,
+                        friendsIds = listOf("2", "3"),
                         uiLanguage = "en"
                     )
                     appViewModel.login(user) // Вызов метода login с новым объектом User

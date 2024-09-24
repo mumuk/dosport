@@ -1,4 +1,4 @@
-package com.example.dosport.ui.components.inputs
+package com.example.dosport.ui.components.generic.inputs
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions

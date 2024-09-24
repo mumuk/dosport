@@ -28,7 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.dosport.data.model.Event
-import com.example.dosport.ui.components.inputs.CustomTextInput
+import com.example.dosport.data.model.ScreenType
+import com.example.dosport.data.model.Status
+import com.example.dosport.ui.components.generic.inputs.CustomTextInput
 import com.example.dosport.ui.theme.AppTheme
 import java.util.UUID
 
@@ -108,7 +110,20 @@ fun EventEditPage(
 fun loadEventById(id: String): Event? {
     // Здесь должна быть логика загрузки события из базы данных, API и т.д.
     // Например:
-    return Event(id, "Sample Event", "This is a sample event description", 10, MaterialTheme.colorScheme.primary.toString())
+    return Event(
+        id = id,
+        name = "Sample Event",
+        description = "This is a sample event description",
+        createdAt = System.currentTimeMillis(),
+        updatedAt = System.currentTimeMillis(),
+        createdBy = "User123",
+        duration = 600L,  // Продолжительность в секундах
+        color = MaterialTheme.colorScheme.primary.toString(),  // Цвет события
+        eventScreenId = "screen123",
+        screenType = ScreenType.VIDEO,  // Например, видео экран
+        link = "https://example.com/video",
+        status = Status.PUBLIC.name
+    )
 }
 
 @Preview(
@@ -125,7 +140,24 @@ fun loadEventById(id: String): Event? {
 fun EventEditPagePreview() {
     AppTheme {
         Surface(tonalElevation = 5.dp) {
-            EventEditPage(navController = rememberNavController(), event=Event(id = "1", name = "Exercise 1", description = "Description 1"), onSave = {}, onCancel = {})
+            EventEditPage(
+                navController = rememberNavController(),
+                event = Event(
+                    id = "4235524",
+                    name = "Sample Event",
+                    description = "This is a sample event description",
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis(),
+                    createdBy = "User123",
+                    duration = 600L,  // Продолжительность в секундах
+                    color = MaterialTheme.colorScheme.primary.toString(),  // Цвет события
+                    eventScreenId = "screen123",
+                    screenType = ScreenType.VIDEO,  // Например, видео экран
+                    link = "https://example.com/video",
+                    status = Status.PUBLIC.name
+                ),
+                onSave = {},
+                onCancel = {})
         }
     }
 }
